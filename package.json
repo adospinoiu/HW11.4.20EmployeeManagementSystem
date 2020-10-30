@@ -1,0 +1,24 @@
+{
+  "name": "HW11.4.20EmployeeManagementSystem",
+  "version": "1.0.0",
+  "description": "",
+  "main": "management.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adospinoiu/HW11.4.20EmployeeManagementSystem.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/adospinoiu/HW11.4.20EmployeeManagementSystem/issues"
+  },
+  "homepage": "https://github.com/adospinoiu/HW11.4.20EmployeeManagementSystem#readme",
+  "dependencies": {
+    "inquirer": "^7.3.3",
+    "mysql": "^2.18.1"
+  }
+}
