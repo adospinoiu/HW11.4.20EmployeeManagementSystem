@@ -35,6 +35,7 @@ function getUserChoice() {
                 type: "checkbox",
                 message: "What would you like to do?",
                 name: "userChoice",
+                loop: false,
                 choices: [
                     "View All Employees",
                     "View All Employees by Department",
@@ -52,10 +53,16 @@ function getUserChoice() {
         .then(function (answers) {
             userChoice = (answers.userChoice[0]);
 
-            console.log(userChoice)
+            console.log(userChoice + "\n")
 
             if (userChoice === "View All Employees") {
-                displayEmployeeTable();
+                displayAllEmployeeInformation();
+            } else if (userChoice === "View All Employees by Department") {
+                displayEmployeesByDepartment();
+            } else if (userChoice === "View All Employees by Manager") {
+                displayEmployeesByManager();
+            } else if (userChoice === "Add Employee") {
+                addEmployeeToDatabase();
             }
 
         })
@@ -64,11 +71,96 @@ function getUserChoice() {
 getUserChoice();
 
 
-// Function to display the Employee Table from the management_db database
-function displayEmployeeTable() {
-    connection.query("SELECT * FROM employee", function (err, res) {
+// Function to display the all employee information on one table from the management_db database
+function displayAllEmployeeInformation() {
+    connection.query('SELECT employee.first_name, employee.last_name, role.title, role.salary, department.department_name FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id', function (err, res) {
         if (err) throw err;
         console.table(res);
         connection.end();
+    
+        console.log("\n");
+
+        getUserChoice();
+    });  
+};
+
+// Function to display all employees by department on one table from the management_db database
+function displayEmployeesByDepartment() {
+    connection.query('SELECT employee.first_name, employee.last_name, department.department_name FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id', function (err, res) {
+        if (err) throw err;
+        console.table(res);
+        connection.end();
+        
+        console.log("\n");
+        getUserChoice();
     });
 };
+
+// Function to display all employees by manager on one table from the management_db database
+function displayEmployeesByManager() {
+    connection.query('SELECT employee.first_name, employee.last_name, employee.manager_id, managed.first_name, managed.last_name FROM employee LEFT JOIN employee managed ON employee.manager_id = managed.id', function (err, res) {
+        if (err) throw err;
+        console.table(res);
+        connection.end();
+    
+        console.log("\n");
+
+        getUserChoice();
+    });
+};
+
+// Function to add an employee to the management_db database
+let firstName = " ";
+let lastName = " ";
+let employeeSalary = " ";
+function addEmployeeToDatabase() {
+    inquirer
+        .prompt([
+            {
+                type: "input",
+                message: "Enter the Employee's First Name: ",
+                name: "firstName"
+            },
+            {
+                type: "input",
+                message: "Enter the Employee's Last Name: ",
+                name: "lastName"
+            },
+            {
+                type: "list",
+                message: "What is the Employee's Role: ",
+                name: "employeeRole",
+                loop: false,
+                choices: [
+                    "Sales Manager",
+                    "Sales Associate",
+                    "Engineering Manager",
+                    "Software Engineer",
+                    "Mechanical Engineer",
+                    "Financial Controler",
+                    "Accounts Payable Rep",
+                    "Accounts Receivable Rep",
+                    "Production Manager",
+                    "Production Supervisor",
+                    "Production Technician",
+                    "Lawyer"
+                ]
+            },
+            {
+                type: "input",
+                message: "Enter the Employee's Salary: ",
+                name: "employeeSalary"
+            },
+        ])
+        .then(function (answers) {
+            firstName = answers.firstName;
+            lastName = answers.lastName;
+            employeeRole = answer.employeeRole;
+            employeeSalary = answers.employeeSalary;
+
+            console.log(firstName);
+            console.log(lastName);
+            console.log(employeeRole); 
+            console.log(employeeSalary);
+        })
+}
