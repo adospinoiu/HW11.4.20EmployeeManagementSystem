@@ -76,7 +76,7 @@ function displayAllEmployeeInformation() {
     connection.query('SELECT employee.first_name, employee.last_name, role.title, role.salary, department.department_name FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id', function (err, res) {
         if (err) throw err;
         console.table(res);
-        connection.end();
+        
     
         console.log("\n");
 
@@ -89,7 +89,7 @@ function displayEmployeesByDepartment() {
     connection.query('SELECT employee.first_name, employee.last_name, department.department_name FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id', function (err, res) {
         if (err) throw err;
         console.table(res);
-        connection.end();
+        
         
         console.log("\n");
         getUserChoice();
@@ -98,10 +98,10 @@ function displayEmployeesByDepartment() {
 
 // Function to display all employees by manager on one table from the management_db database
 function displayEmployeesByManager() {
-    connection.query('SELECT employee.first_name, employee.last_name, employee.manager_id, managed.first_name, managed.last_name FROM employee LEFT JOIN employee managed ON employee.manager_id = managed.id', function (err, res) {
+    connection.query('SELECT employee.first_name, employee.last_name, managers.manager_first_name, managers.manager_last_name FROM employee LEFT JOIN managers ON employee.manager_id = managers.manager_id', function (err, res) {
         if (err) throw err;
         console.table(res);
-        connection.end();
+        
     
         console.log("\n");
 
