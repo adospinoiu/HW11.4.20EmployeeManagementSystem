@@ -136,18 +136,18 @@ function addEmployeeToDatabase() {
                 name: "employeeRole",
                 loop: false,
                 choices: [
-                    "Sales Manager",
-                    "Sales Associate",
-                    "Engineering Manager",
-                    "Software Engineer",
-                    "Mechanical Engineer",
-                    "Financial Controler",
-                    "Accounts Payable Rep",
-                    "Accounts Receivable Rep",
-                    "Production Manager",
-                    "Production Supervisor",
-                    "Production Technician",
-                    "Lawyer"
+                    "1  Sales Manager",
+                    "2  Sales Associate",
+                    "3  Engineering Manager",
+                    "4  Software Engineer",
+                    "5  Mechanical Engineer",
+                    "6  Financial Controler",
+                    "7  Accounts Payable Rep",
+                    "8  Accounts Receivable Rep",
+                    "9  Production Manager",
+                    "10 Production Supervisor",
+                    "11 Production Technician",
+                    "12 Lawyer"
                 ]
             },
             {
@@ -162,10 +162,23 @@ function addEmployeeToDatabase() {
             employeeRole = answers.employeeRole;
             employeeSalary = answers.employeeSalary;
 
+            let employeeRoleId = employeeRole.substring(0,2);
+
             console.log(firstName);
             console.log(lastName);
             console.log(employeeRole);
+            console.log(employeeRoleId);
             console.log(employeeSalary);
+
+            connection.query("INSERT INTO employee (first_name, last_name, role_id) VALUES (?, ?, ?)", [answers.firstName, answers.lastName, employeeRoleId], function (err, res) {
+                if (err) throw err;
+                console.table(res);
+    
+                getUserChoice();
+            });
+
+
+
         })
 };
 
