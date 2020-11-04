@@ -41,6 +41,7 @@ function getUserChoice() {
                     "View All Employees by Department",
                     "View All Employees by Manager",
                     "Add Employee",
+                    "Add Department",
                     "Remove Employee",
                     "Update Employee Role",
                     "Update Employee Manager",
@@ -63,6 +64,8 @@ function getUserChoice() {
                 displayEmployeesByManager();
             } else if (userChoice === "Add Employee") {
                 addEmployeeToDatabase();
+            } else if (userChoice === "Add Department") {
+                addDepartment();
             }
 
         })
@@ -76,12 +79,12 @@ function displayAllEmployeeInformation() {
     connection.query('SELECT employee.first_name, employee.last_name, role.title, role.salary, department.department_name FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id', function (err, res) {
         if (err) throw err;
         console.table(res);
-        
-    
+
+
         console.log("\n");
 
         getUserChoice();
-    });  
+    });
 };
 
 // Function to display all employees by department on one table from the management_db database
@@ -89,8 +92,8 @@ function displayEmployeesByDepartment() {
     connection.query('SELECT employee.first_name, employee.last_name, department.department_name FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id', function (err, res) {
         if (err) throw err;
         console.table(res);
-        
-        
+
+
         console.log("\n");
         getUserChoice();
     });
@@ -101,8 +104,8 @@ function displayEmployeesByManager() {
     connection.query('SELECT employee.first_name, employee.last_name, managers.manager_first_name, managers.manager_last_name FROM employee LEFT JOIN managers ON employee.manager_id = managers.manager_id', function (err, res) {
         if (err) throw err;
         console.table(res);
-        
-    
+
+
         console.log("\n");
 
         getUserChoice();
@@ -112,6 +115,7 @@ function displayEmployeesByManager() {
 // Function to add an employee to the management_db database
 let firstName = " ";
 let lastName = " ";
+let employeeRole = " ";
 let employeeSalary = " ";
 function addEmployeeToDatabase() {
     inquirer
@@ -155,12 +159,29 @@ function addEmployeeToDatabase() {
         .then(function (answers) {
             firstName = answers.firstName;
             lastName = answers.lastName;
-            employeeRole = answer.employeeRole;
+            employeeRole = answers.employeeRole;
             employeeSalary = answers.employeeSalary;
 
             console.log(firstName);
             console.log(lastName);
-            console.log(employeeRole); 
+            console.log(employeeRole);
             console.log(employeeSalary);
         })
+};
+
+function addDepartment() {
+    inquirer.prompt(
+        {
+            type: "input",
+            message: "Enter the Department to add to the database",
+            name: "departmentName"
+        }
+    ).then(function (answers) {
+        connection.query("INSERT INTO department (department_name) VALUES (?)", [answers.departmentName], function (err, res) {
+            if (err) throw err;
+            console.table(res);
+
+            getUserChoice();
+        });
+    })
 }
