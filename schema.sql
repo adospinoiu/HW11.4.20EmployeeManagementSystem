@@ -57,3 +57,25 @@ VALUES ("John", "Doe", 1),
         ("Mike", "Brown", 10),
         ("Kevin", "Bacon", 11), ("Marry", "Poppins", 11),
         ("Liar", "Liar", 12);
+
+-- To join all the tables
+SELECT employee.first_name, employee.last_name, role.title, role.salary, department.department_name 
+	FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id;
+
+-- To display employees by department        
+SELECT employee.first_name, employee.last_name, department.department_name, employee.manager_id
+	FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id;    
+        
+     
+SELECT * FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id;      
+
+-- To display employees by manager.
+SELECT employee.first_name, employee.last_name, managers.manager_first_name, managers.manager_last_name
+ FROM employee LEFT JOIN managers ON employee.manager_id = managers.manager_id; 
+
+SELECT * FROM employee LEFT JOIN employee managed ON employee.manager_id = managed.id;    
+
+-- To display employees from a certain department
+SELECT employee.first_name, employee.last_name, role.title, role.salary, department.department_name 
+	FROM employee LEFT JOIN role ON employee.role_id = role.id 
+    LEFT JOIN department ON role.department_id = department.id WHERE department.department_name = "Production";

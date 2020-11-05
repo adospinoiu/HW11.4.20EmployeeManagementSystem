@@ -42,11 +42,11 @@ function getUserChoice() {
                     "View All Employees by Manager",
                     "Add Employee",
                     "Add Department",
+                    "Add Role",
                     "Remove Employee",
                     "Update Employee Role",
                     "Update Employee Manager",
                     "View All Roles",
-                    "Add Role",
                     "Remove Role"
                 ]
             },
@@ -56,6 +56,7 @@ function getUserChoice() {
 
             console.log(userChoice + "\n")
 
+            // Evaluates the users input and makes the correct choice on which function to call
             if (userChoice === "View All Employees") {
                 displayAllEmployeeInformation();
             } else if (userChoice === "View All Employees by Department") {
@@ -66,6 +67,8 @@ function getUserChoice() {
                 addEmployeeToDatabase();
             } else if (userChoice === "Add Department") {
                 addDepartment();
+            } else if (userChoice === "Add Role") {
+                addRole();
             }
 
         })
@@ -87,6 +90,7 @@ function displayAllEmployeeInformation() {
     });
 };
 
+
 // Function to display all employees by department on one table from the management_db database
 function displayEmployeesByDepartment() {
     connection.query('SELECT employee.first_name, employee.last_name, department.department_name FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id', function (err, res) {
@@ -98,6 +102,7 @@ function displayEmployeesByDepartment() {
         getUserChoice();
     });
 };
+
 
 // Function to display all employees by manager on one table from the management_db database
 function displayEmployeesByManager() {
@@ -111,6 +116,7 @@ function displayEmployeesByManager() {
         getUserChoice();
     });
 };
+
 
 // Function to add an employee to the management_db database
 let firstName = " ";
@@ -173,23 +179,23 @@ function addEmployeeToDatabase() {
             connection.query("INSERT INTO employee (first_name, last_name, role_id) VALUES (?, ?, ?)", [answers.firstName, answers.lastName, employeeRoleId], function (err, res) {
                 if (err) throw err;
                 console.table(res);
-    
-                getUserChoice();
             });
 
-
-
+            getUserChoice();
         })
 };
 
+
+// Function to add a department to the management_db database
 function addDepartment() {
-    inquirer.prompt(
+    inquirer.prompt([
         {
             type: "input",
             message: "Enter the Department to add to the database",
             name: "departmentName"
         }
-    ).then(function (answers) {
+    ])
+    .then(function (answers) {
         connection.query("INSERT INTO department (department_name) VALUES (?)", [answers.departmentName], function (err, res) {
             if (err) throw err;
             console.table(res);
@@ -197,4 +203,57 @@ function addDepartment() {
             getUserChoice();
         });
     })
-}
+};
+
+
+// function to add a role to the management_db database
+let roleName = " ";
+let roleSalary = " ";
+let roleDepartment = " ";
+function addRole() {
+    inquirer.prompt([
+        {
+            type: "input",
+            message: "Enter the Role to add to the database",
+            name: "roleName"
+        },
+        {
+            type: "input",
+            message: "Enter the Salary of the Role",
+            name: "roleSalary"
+        },
+        {
+            type: "list",
+            message: "Enter the Department the Role is in: ",
+            name: "roleDepartment",
+            loop: false,
+            choices: [
+                "1  Sales",
+                "2  Engineering",
+                "3  Finance",
+                "4  Accounting",
+                "5  Production",
+                "6  Legal"
+            ]
+        },
+    ])
+    .then(function (answers) {
+        roleName = answers.roleName;
+        roleSalary = answers.roleSalary;
+        roleDepartment = answers.roleDepartment;
+
+        let roleDepartmentId = roleDepartment.substring(0,1);
+
+        console.log(roleName);
+        console.log(roleSalary);
+        console.log(roleDepartment);
+        console.log(roleDepartmentId);
+        
+        connection.query("INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)", [answers.roleName, answers.roleSalary, roleDepartmentId], function (err, res) {
+            if (err) throw err;
+            console.table(res);
+
+            getUserChoice();
+        });
+    })
+};
